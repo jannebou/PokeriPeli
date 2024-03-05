@@ -1,5 +1,7 @@
 # PokeriPeli
  Pokeri peli Tietorakenne ja algoritmit kurssin harjoitustyötä varten
+ 
+ Suorita Game.java
 
 # Toiminta
  Pelaajalle annetaan 100 pelirahaa pelin alussa.
@@ -8,6 +10,8 @@
  lopussa tarkistetaan pelaajan käsi ja sen mukaan palautetaan rahaa.
  
  Peli jatkuu niin kauan kun rahaa riittää.
+
+ 
 
 # Mitä olen oppinut
  käyttämään luokkia paremmin ja koodaamaan javaa paremmin
