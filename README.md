@@ -2,6 +2,7 @@
  Pokeri peli Tietorakenne ja algoritmit kurssin harjoitustyötä varten
  
  Suorita Game.java
+ <span style="color:green">Suorita Game.java</span>.
 
 # Toiminta
  Pelaajalle annetaan 100 pelirahaa pelin alussa.
