@@ -4,22 +4,29 @@ public class Raha {
 
     @Override
     public String toString() {
-        return "jäjellä on: " + getRaha();
+        return "jäljellä on: " + getRaha();
     }
 
+
+    //konstruktori
     public Raha(double raha) {
         this.raha = raha;
     }
 
+
+    // palauttaa paljonko rahaa on
     public double getRaha() {
         return raha;
     }
 
+    
+    // rahan asettaminen
     public void setRaha(double raha) {
         this.raha = raha;
     }
 
 
+    // rahan vähennystä varten
     public boolean decRaha(double amount){
         if (amount > raha){
             return false;
@@ -29,10 +36,9 @@ public class Raha {
         }
     }
 
+
+    // rahan lisääminen
     public void incRaha(double amount){
         this.raha += amount;
     }
-
-    
-    
 }

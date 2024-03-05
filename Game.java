@@ -1,4 +1,3 @@
-
 // Harjoitustyön kuvaus
 
 // Ohjelma antaa käynnistyessään pelaajalle pelirahaa 100 euroa.
@@ -15,19 +14,18 @@
 //  värisuora
 // Peli jatkuu niin kauan, kun pelaaja pyytää uutta jakoa, tai pelaajan rahat loppuu
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 
 public class Game{
-    // peliä varten
     private static Raha raha;
     private static KorttiPakka pakka;
     private static double panos;
 
-
     public static void main(String[] args) {
-        // Ohjelma antaa käynnistyessään pelaajalle pelirahaa 100 euroa.
+        // Ohjelma antaa käynnistyessään pelaajalle pelirahaa 100 euroa ja lopettaa pelin jos rahat loppuu.
         raha = new Raha(100);
         while (raha.getRaha() > 0){
             gameLoop();
@@ -37,71 +35,87 @@ public class Game{
 
 
     public static void gameLoop(){
+
+        // tulostetaan pelaajalle pelirahan määrä ja kysytään panoksen määrää,
+        // samalla katsotaan virhesyötteet ja onko pelaajalla tarpeeksi rahaa pelamiseen.
         System.out.println(raha + ", syötä panoksen määrä: ");
-        // kysytään panoksen määrää
-        panos = Double.parseDouble(getInput()); 
-        
-        // vähennetään rahaa ja katsotaan onko riittävästi rahaa,
-        if (raha.decRaha(panos) != true) {
-            System.out.println("sinulla ei ole tarpeeksi rahaa jatkaaksesi... lopetetaan");
+        try {
+            panos = Double.parseDouble(getInput());
+            if (panos < 0){
+                System.out.println("panos ei voi olla negatiivinen");
+                return;
+            }
+            if (raha.decRaha(panos) != true) {
+                System.out.println("liian suuri panos, rahasi ei riitä");
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("syötä vain numeroita");
             return;
         }
         
+
+        // luodaan uusi pakka, sekoitetaan ja jaetaan se, lopuksi tulostetaan jaettut kortit
         System.out.println("Jaetaan kortit, kierroksen hinta on: " + panos);
-        // luodaan uusi korttipakka
         pakka = new KorttiPakka();
         pakka.luoPakka();
-        // Sekoitetaan korttipakkaa
         pakka.sekoitaPakka();
-        
-        // jaetaan käsi viidellä kortilla
         List<Kortti> hand = pakka.jaa(5);
-        
-        //tulostetaan kortit
         tulostaKortit(hand);
+        
+
+        // kysytään pelaajalta mitkä kortit pelaaja haluaa vaihtaa
         System.out.println("syötä pilkulla erotellen mitkä kortit haluat vaihtaa ");
-        
-        System.out.print("1-5, 0: lopettaa: ");
-        // kysytään korttien numeroita
-        
-        String input = getInput();
-        
-        if (input.equals("0")){
-            System.out.println("Jatketaan");
-            //TODO jatka
-        }else{
-            System.out.println("Vaihdetaan kortit: " + input);
-        }
-        
-        String[] vaihdettavatKortit = input.split(",");
-        
-        for (String string : vaihdettavatKortit) {
-            // otetaan ID talteen
-            int id = Integer.parseInt(string) - 1;
-            
-            // tehdään väliaikainen lista johon jaetaan yksi uusi kortti
-            List<Kortti> temp = pakka.jaa(1);
-            Kortti uusiKortti = (Kortti) temp.get(0);
-            
-            // poistetaan vanha kortti kädestä ja lisätään uusi tilalle
-            hand.remove(id);
-            hand.add(id, uusiKortti);   
-        }
-        
-        tulostaKortit(hand);
+        System.out.print("1-5, 0: jatkaa: ");
+        List<String> vaihdettavatKortit = Arrays.asList(getInput().split(","));
+ 
 
-        // Tarkistetaan kyseinen käsi, löytyykö voittoa
-        KadenTarkistus.check(hand);
+        // jos vaihdettavia kortteja on enemmän kuin sallitun, 
+        // kysytään pelaajalta niin kauan, että pelaaja antaa oikean syötteen
+        while (vaihdettavatKortit.size() > 4) {
+            if (vaihdettavatKortit.size() > 4) {
+                System.out.println("syötä pilkulla erotellen mitkä kortit haluat vaihtaa (max. 4 korttia) ");
+                System.out.print("1-5, 0: jatkaa: ");
+                vaihdettavatKortit = Arrays.asList(getInput().split(","));
+            }else{
+                break;
+            }
+        }
 
+
+        // jos pelaaja on syöttänyt 0, peli jatkuu ilman korttien vaihtoa
+        // muuten vaihtaa valitut kortit kortin id:n mukaan
+        // lopuksi tulostaa uudet kortit
+        if (vaihdettavatKortit.get(0).equals("0")){
+            System.out.println("Jatketaan ilman korttien vaihtoa");
+        }
+        else{
+            for (String string : vaihdettavatKortit) {
+
+                // otetaan ID talteen ja tehdään väliaikainen lista johon jaetaan yksi uusi kortti
+                int id = Integer.parseInt(string) - 1;
+                List<Kortti> temp = pakka.jaa(1);
+                Kortti uusiKortti = (Kortti) temp.get(0);
+                        
+
+                // poistetaan vanha kortti kädestä ja lisätään uusi tilalle
+                hand.remove(id);
+                hand.add(id, uusiKortti);   
+            }
+            tulostaKortit(hand);
+        }
+
+
+        // Tarkistetaan kyseinen käsi, löytyykö voittoa, jos löytyy,
+        // tulostetaan mitä kädestä löytyi ja paljon voittokerroin oli
+        System.out.println();
+        int voittokerroin = KadenTarkistus.check(hand);
+        System.out.println(KadenTarkistus.getKädenVoitto() + ", Kerroin on: " + voittokerroin);
+        raha.incRaha(voittokerroin * panos);
     }
 
 
 
-
-
-
-        
-        
     // Funktio jolla saadaan käyttäjän syöte
     public static String getInput(){
         System.out.print("-> ");

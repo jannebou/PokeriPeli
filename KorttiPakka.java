@@ -5,11 +5,12 @@ import java.util.List;
 public class KorttiPakka {
     private ArrayList<Kortti> pakka;
 
+    //konstruktori
     public KorttiPakka() {
 
     }
 
-
+    // luo uuden korttipakan
     public void luoPakka(){
         this.pakka = new ArrayList<>();
         for (Maa maa: Maa.values()) {
@@ -20,10 +21,14 @@ public class KorttiPakka {
         }
     }
 
+
+    // sekoittaa korttipakan
     public void sekoitaPakka(){
         Collections.shuffle(pakka);
     }
 
+
+    // jakaa n määrän kortteja
     public List<Kortti> jaa(int n)
     { // palautetaan jaettu käsi
         List<Kortti> kasi = new ArrayList<>(this.pakka.subList(0, n));
